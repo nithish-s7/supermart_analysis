@@ -1,0 +1,289 @@
+# SUPERMARKET SALES DASHBOARD PROJECT
+
+# 1. Import Libraries
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+print("SUPERMARKET SALES DASHBOARD")
+print("----------------------------------")
+
+
+# 2. Load Dataset
+
+df = pd.read_csv("SuperMarket Analysis.csv")
+
+print("\nDataset Loaded Successfully")
+
+print(df.head())
+
+
+# 3. Understand Dataset
+
+print("\nDataset Shape:")
+print(df.shape)
+
+print("\nColumn Names:")
+print(df.columns.tolist())
+
+print("\nDataset Information:")
+df.info()
+
+print("\nStatistical Summary:")
+print(df.describe())
+
+
+# 4. Check Missing Values and Duplicates
+
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+print("\nDuplicate Records:")
+print(df.duplicated().sum())
+
+
+# 5. Data Cleaning
+
+df = df.drop_duplicates()
+
+df["Date"] = pd.to_datetime(df["Date"], format="%m/%d/%Y")
+
+df["Time"] = pd.to_datetime(df["Time"], format="%I:%M:%S %p")
+
+df["City"] = df["City"].str.strip()
+
+df["Product line"] = df["Product line"].str.strip()
+
+print("\nData Cleaning Completed")
+
+
+# 6. Data Processing
+
+df["Month"] = df["Date"].dt.month_name()
+
+df["Hour"] = df["Time"].dt.hour
+
+df["Day"] = df["Date"].dt.day_name()
+
+print("\nProcessed Dataset:")
+print(df.head())
+
+
+# 7. Calculate Key Performance Indicators
+
+total_sales = df["Sales"].sum()
+
+total_income = df["gross income"].sum()
+
+total_invoices = df["Invoice ID"].nunique()
+
+average_rating = df["Rating"].mean()
+
+total_quantity = df["Quantity"].sum()
+
+print("\nKEY PERFORMANCE INDICATORS")
+
+print("Total Sales:", round(total_sales, 2))
+
+print("Total Gross Income:", round(total_income, 2))
+
+print("Total Invoices:", total_invoices)
+
+print("Average Customer Rating:", round(average_rating, 2))
+
+print("Total Quantity Sold:", total_quantity)
+
+
+# 8. Sales Analysis by City
+
+city_sales = df.groupby("City")["Sales"].sum()
+
+print("\nSALES BY CITY")
+print(city_sales)
+
+print("\nHighest Sales City:", city_sales.idxmax())
+
+
+# 9. Sales Analysis by Product Line
+
+product_sales = df.groupby("Product line")["Sales"].sum()
+
+print("\nSALES BY PRODUCT LINE")
+print(product_sales)
+
+print("\nBest Performing Product:", product_sales.idxmax())
+
+
+# 10. Sales Analysis by Branch
+
+branch_sales = df.groupby("Branch")["Sales"].sum()
+
+print("\nSALES BY BRANCH")
+print(branch_sales)
+
+
+# 11. Customer Analysis
+
+customer_sales = df.groupby("Customer type")["Sales"].sum()
+
+gender_sales = df.groupby("Gender")["Sales"].sum()
+
+print("\nSALES BY CUSTOMER TYPE")
+print(customer_sales)
+
+print("\nSALES BY GENDER")
+print(gender_sales)
+
+
+# 12. Payment Method Analysis
+
+payment_sales = df.groupby("Payment")["Sales"].sum()
+
+print("\nSALES BY PAYMENT METHOD")
+print(payment_sales)
+
+print("\nMost Used Payment Method:", df["Payment"].value_counts().idxmax())
+
+
+# 13. Monthly Sales Analysis
+
+monthly_sales = df.groupby("Month")["Sales"].sum()
+
+month_order = [
+    "January", "February", "March", "April",
+    "May", "June", "July", "August",
+    "September", "October", "November", "December"
+]
+
+monthly_sales = monthly_sales.reindex(month_order).dropna()
+
+print("\nMONTHLY SALES")
+print(monthly_sales)
+
+
+# 14. Sales by City - Bar Chart
+
+plt.figure(figsize=(8, 5))
+
+city_sales.plot(kind="bar")
+
+plt.title("Total Sales by City")
+plt.xlabel("City")
+plt.ylabel("Total Sales")
+
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()
+
+
+# 15. Product Line Sales - Bar Chart
+
+plt.figure(figsize=(10, 5))
+
+product_sales.plot(kind="barh")
+
+plt.title("Sales by Product Line")
+plt.xlabel("Total Sales")
+plt.ylabel("Product Line")
+
+plt.tight_layout()
+plt.show()
+
+
+# 16. Monthly Sales - Line Chart
+
+plt.figure(figsize=(10, 5))
+
+monthly_sales.plot(kind="line", marker="o")
+
+plt.title("Monthly Sales Trend")
+plt.xlabel("Month")
+plt.ylabel("Total Sales")
+
+plt.grid(True)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+
+# 17. Payment Method - Pie Chart
+
+plt.figure(figsize=(7, 7))
+
+payment_sales.plot(kind="pie", autopct="%1.1f%%")
+
+plt.title("Payment Method Distribution")
+plt.ylabel("")
+
+plt.tight_layout()
+plt.show()
+
+
+# 18. Customer Rating - Bar Chart
+
+rating_sales = df.groupby("Product line")["Rating"].mean()
+
+plt.figure(figsize=(10, 5))
+
+rating_sales.plot(kind="bar")
+
+plt.title("Average Customer Rating by Product Line")
+plt.xlabel("Product Line")
+plt.ylabel("Average Rating")
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+
+# 19. Business Insights
+
+print("\nBUSINESS INSIGHTS")
+print("----------------------------------")
+
+print("1. Highest Sales City:", city_sales.idxmax())
+
+print("2. Best Product Line:", product_sales.idxmax())
+
+print("3. Highest Sales Branch:", branch_sales.idxmax())
+
+print("4. Most Used Payment Method:", df["Payment"].value_counts().idxmax())
+
+print("5. Average Customer Rating:", round(average_rating, 2))
+
+print("6. Total Sales:", round(total_sales, 2))
+
+
+# 20. Save Cleaned Dataset
+
+df.to_csv("cleaned_supermarket_sales.csv", index=False)
+
+print("\nCleaned Dataset Saved Successfully")
+
+
+# 21. Project Conclusion
+
+print("\nPROJECT CONCLUSION")
+
+print("Supermarket Sales Dashboard Project Completed Successfully.")
+
+print("Sales data was analyzed using Python, Pandas and Matplotlib.")
+
+print("The project helps understand sales performance,")
+print("customer behaviour, product performance and payment methods.")
+
+print("\nTHANK YOU")
+plt.figure(figsize=(8, 5))
+city_sales.plot(kind="bar")
+plt.title("Total Sales by City")
+plt.xlabel("City")
+plt.ylabel("Total Sales")
+plt.tight_layout()
+plt.show()
+plt.figure(figsize=(10, 5))
+product_sales.plot(kind="barh")
+plt.title("Sales by Product Line")
+plt.xlabel("Total Sales")
+plt.ylabel("Product Line")
+plt.tight_layout()
+plt.show()
